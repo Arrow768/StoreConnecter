@@ -7,9 +7,14 @@ if (!defined("IN_MYBB")) {
 }
 
 // Hooks
-//$plugins->add_hook('global_start', 'storeconnecter_global_start');
+if($mybb->settings[''] == 1){
+    $plugins->add_hook('global_start', 'storeconnecter_global_start');
+}
+
 $plugins->add_hook('newreply_do_newreply_end', 'storeconnecter_newreply_end');
 $plugins->add_hook('newthread_do_newthread_end', 'storeconnecter_newthread_end');
+$plugins->add_hook('polls_do_newpoll_end','storeconnecter_newpoll');
+$plugins->add_hook('polls_vote_end','storeconnecter_vote_end');
 
 // Information
 function storeconnecter_info() {
@@ -89,13 +94,37 @@ function storeconnecter_activate() {
     $db->insert_query('settings', $storeconnecter_setting);
     
     $storeconnecter_setting = array(
+        'sid'=>'NULL',
+        'name'=>'storeconnecter_votecredits',
+        'title' => 'Credits a user gets for a vote',
+        'description' => 'The number of credits a user gets for a vote',
+        'optionscode' => 'text',
+        'value' => '1',
+        'disporder' => 5,
+        'gid' => intval($gid),
+    );
+    $db->insert_query('settings', $storeconnecter_setting);
+    
+    $storeconnecter_setting = array(
+        'sid'=>'NULL',
+        'name'=>'storeconnecter_pollcredits',
+        'title' => 'Credits a user gets for a Poll',
+        'description' => 'The number of credits a user gets for a poll',
+        'optionscode' => 'text',
+        'value' => '1',
+        'disporder' => 6,
+        'gid' => intval($gid),
+    );
+    $db->insert_query('settings', $storeconnecter_setting);
+    
+    $storeconnecter_setting = array(
         'sid' => 'NULL',
         'name' => 'storeconnecter_dbhost',
         'title' => 'Store Database Host',
         'description' => 'The Host of the Store Database',
         'optionscode' => 'text',
         'value' => 'localhost',
-        'disporder' => 5,
+        'disporder' => 7,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -107,7 +136,7 @@ function storeconnecter_activate() {
         'description' => 'User of the Store Database',
         'optionscode' => 'text',
         'value' => 'user',
-        'disporder' => 6,
+        'disporder' => 8,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -119,7 +148,7 @@ function storeconnecter_activate() {
         'description' => 'Password of the Store Database',
         'optionscode' => 'text',
         'value' => 'password',
-        'disporder' => 7,
+        'disporder' => 9,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -131,7 +160,7 @@ function storeconnecter_activate() {
         'description' => 'Name of the Store Database',
         'optionscode' => 'text',
         'value' => 'store',
-        'disporder' => 8,
+        'disporder' => 10,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -141,10 +170,12 @@ function storeconnecter_activate() {
 // Deactivate
 function storeconnecter_deactivate() {
     global $db;
-    $db->query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name IN ('storeconnecter_enable','storeconnecter_steamidrow','storeconnecter_postcredits','storeconnecter_threadcredits','storeconnecter_dbhost','storeconnecter_dbuser','storeconnecter_dbpass','storeconnecter_dbname')");
+    $db->query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name IN ('storeconnecter_enable','storeconnecter_steamidrow','storeconnecter_postcredits','storeconnecter_threadcredits','storeconnecter_dbhost','storeconnecter_dbuser','storeconnecter_dbpass','storeconnecter_dbname','storeconnecter_votecredits','storeconnecter_pollcredits')");
     $db->query("DELETE FROM " . TABLE_PREFIX . "settinggroups WHERE name='storeconnecter'");
     rebuild_settings();
 }
+
+
 
 function storeconnecter_global_start() {
     global $mybb, $db;
@@ -187,6 +218,35 @@ function storeconnecter_newthread_end(){
         update_storecredits($new_credits);
     }
 }
+
+function storeconnecter_newpoll(){
+    global $mybb, $db;
+    
+    if ($mybb->settings['storeconnecter_enable'] == 1) {
+        
+        $credits = get_storecredits($mybb->user[$mybb->settings['storecredits_steamidrow']]);
+        $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
+        //get the credits
+        $new_credits = $credits + $mybb->settings['storeconnecter_pollcredits'];
+        
+        update_storecredits($new_credits);
+    }
+}
+
+function storeconnecter_vote_end(){
+    global $mybb, $db;
+    
+    if ($mybb->settings['storeconnecter_enable'] == 1) {
+        
+        $credits = get_storecredits($mybb->user[$mybb->settings['storecredits_steamidrow']]);
+        $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
+        //get the credits
+        $new_credits = $credits + $mybb->settings['storeconnecter_votecredits'];
+        
+        update_storecredits($new_credits);
+    }
+}
+
 
 function steamid_to_auth($steamid){
     //from https://forums.alliedmods.net/showpost.php?p=1890083&postcount=234
