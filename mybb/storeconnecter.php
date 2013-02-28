@@ -15,6 +15,7 @@ $plugins->add_hook('newreply_do_newreply_end', 'storeconnecter_newreply_end');
 $plugins->add_hook('newthread_do_newthread_end', 'storeconnecter_newthread_end');
 $plugins->add_hook('polls_do_newpoll_end','storeconnecter_newpoll');
 $plugins->add_hook('polls_vote_end','storeconnecter_vote_end');
+$plugins->add_hook('member_do_register_end','storeconnecter_new_registration');
 
 // Information
 function storeconnecter_info() {
@@ -24,7 +25,7 @@ function storeconnecter_info() {
         "website" => "https://forums.alliedmods.net/forumdisplay.php?f=157",
         "author" => "Arrow768",
         "authorsite" => "http://sourcedonates.com",
-        "version" => "0.1",
+        "version" => "0.2",
         "guid" => "",
         "compatibility" => "16*"
     );
@@ -118,13 +119,25 @@ function storeconnecter_activate() {
     $db->insert_query('settings', $storeconnecter_setting);
     
     $storeconnecter_setting = array(
+        'sid'=>'NULL',
+        'name'=>'storeconnecter_registercredits',
+        'title' => 'Credits a user gets for creating his account',
+        'description' => 'The number of credits a user gets for registering in the forum',
+        'optionscode' => 'text',
+        'value' => '1',
+        'disporder' => 7,
+        'gid' => intval($gid),
+    );
+    $db->insert_query('settings', $storeconnecter_setting);
+    
+    $storeconnecter_setting = array(
         'sid' => 'NULL',
         'name' => 'storeconnecter_dbhost',
         'title' => 'Store Database Host',
         'description' => 'The Host of the Store Database',
         'optionscode' => 'text',
         'value' => 'localhost',
-        'disporder' => 7,
+        'disporder' => 8,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -136,7 +149,7 @@ function storeconnecter_activate() {
         'description' => 'User of the Store Database',
         'optionscode' => 'text',
         'value' => 'user',
-        'disporder' => 8,
+        'disporder' => 9,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -148,7 +161,7 @@ function storeconnecter_activate() {
         'description' => 'Password of the Store Database',
         'optionscode' => 'text',
         'value' => 'password',
-        'disporder' => 9,
+        'disporder' => 10,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -160,7 +173,7 @@ function storeconnecter_activate() {
         'description' => 'Name of the Store Database',
         'optionscode' => 'text',
         'value' => 'store',
-        'disporder' => 10,
+        'disporder' => 11,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -242,6 +255,20 @@ function storeconnecter_vote_end(){
         $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
         //get the credits
         $new_credits = $credits + $mybb->settings['storeconnecter_votecredits'];
+        
+        update_storecredits($new_credits);
+    }
+}
+
+function storeconnecter_new_registration(){
+    global $mybb, $db;
+    
+    if ($mybb->settings['storeconnecter_enable'] == 1) {
+        
+        $credits = get_storecredits($mybb->user[$mybb->settings['storecredits_steamidrow']]);
+        $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
+        //get the credits
+        $new_credits = $credits + $mybb->settings['storeconnecter_registercredits'];
         
         update_storecredits($new_credits);
     }
