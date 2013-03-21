@@ -194,7 +194,7 @@ function storeconnecter_global_start() {
     global $mybb, $db;
 
     if ($mybb->settings['storeconnecter_enable'] == 1) {
-              
+        
         //get the authid
         $auth = steamid_to_auth($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
         echo "auth:".$auth."  ";
@@ -275,6 +275,15 @@ function storeconnecter_new_registration(){
 }
 
 
+function friendid_to_auth($friendid){
+    if (substr($friendid,-1)%2==0) $server=0; else $server=1;
+    $auth=bcsub($friendid,'76561197960265728');
+    $auth=bcsub($auth,$server);
+    $auth=bcdiv($auth,2);
+    $steam = "STEAM_0:".$server.':'.$auth;
+    return steamid_to_auth($steam);
+}
+
 function steamid_to_auth($steamid){
     //from https://forums.alliedmods.net/showpost.php?p=1890083&postcount=234
     $toks = explode(":", $steamid);
@@ -316,7 +325,7 @@ function get_storecredits(){
         }
 
     }catch(PDOException $e){
-        echo $e;
+        echo "Report the following error to your administrator".$e;
     }
 }
 
@@ -343,7 +352,7 @@ function update_storecredits($new_credits){
             ':auth'=>$auth,
         ));
     }catch(PDOException $e){
-        echo $e;
+        echo "Report the following error to your administrator".$e;
     }
 }
 ?>
