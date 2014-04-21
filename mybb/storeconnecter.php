@@ -7,10 +7,7 @@ if (!defined("IN_MYBB")) {
 }
 
 // Hooks
-if($mybb->settings['storeconnecter_enable_debug'] == 1){
-    $plugins->add_hook('global_start', 'storeconnecter_global_start');
-}
-
+$plugins->add_hook('global_start', 'storeconnecter_global_start');
 $plugins->add_hook('newreply_do_newreply_end', 'storeconnecter_newreply_end');
 $plugins->add_hook('newthread_do_newthread_end', 'storeconnecter_newthread_end');
 $plugins->add_hook('polls_do_newpoll_end','storeconnecter_newpoll');
@@ -25,7 +22,7 @@ function storeconnecter_info() {
         "website" => "https://forums.alliedmods.net/forumdisplay.php?f=157",
         "author" => "Arrow768",
         "authorsite" => "http://sourcedonates.com",
-        "version" => "0.3",
+        "version" => "0.4",
         "guid" => "",
         "compatibility" => "16*"
     );
@@ -62,7 +59,7 @@ function storeconnecter_activate() {
         'sid' => 'NULL',
         'name' => 'storeconnecter_enable_debug',
         'title' => 'Enable Debugging',
-        'description' => 'Only set this to yes if you are asked to do so',
+        'description' => 'Enable Debug Mode',
         'optionscode' => 'yesno',
         'value' => '0',
         'disporder' => 1,
@@ -205,14 +202,17 @@ function storeconnecter_deactivate() {
 function storeconnecter_global_start() {
     global $mybb, $db;
 
-    if ($mybb->settings['storeconnecter_enable'] == 1) {
+    if ($mybb->settings['storeconnecter_enable_debug'] == 1) {
         
+		echo "<center><h1>storeconnector is enabled</h1><br />";
+		
         //get the authid
         $auth = steamid_to_auth($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
         echo "auth:".$auth."  ";
         
         $credits = get_storecredits();
         echo "credits:". $credits . "   ";
+		echo "</center>";
     }
 }
 
@@ -337,7 +337,7 @@ function get_storecredits(){
         }
 
     }catch(PDOException $e){
-        echo "Report the following error to your administrator".$e;
+        echo "Report the following error to your administrator: </br>".$e;
     }
 }
 
@@ -364,7 +364,7 @@ function update_storecredits($new_credits){
             ':auth'=>$auth,
         ));
     }catch(PDOException $e){
-        echo "Report the following error to your administrator".$e;
+        echo "Report the following error to your administrator: </br>".$e;
     }
 }
 ?>
