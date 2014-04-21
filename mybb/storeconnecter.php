@@ -7,10 +7,7 @@ if (!defined("IN_MYBB")) {
 }
 
 // Hooks
-if($mybb->settings[''] == 1){
-    $plugins->add_hook('global_start', 'storeconnecter_global_start');
-}
-
+$plugins->add_hook('global_start', 'storeconnecter_global_start');
 $plugins->add_hook('newreply_do_newreply_end', 'storeconnecter_newreply_end');
 $plugins->add_hook('newthread_do_newthread_end', 'storeconnecter_newthread_end');
 $plugins->add_hook('polls_do_newpoll_end','storeconnecter_newpoll');
@@ -25,7 +22,7 @@ function storeconnecter_info() {
         "website" => "https://forums.alliedmods.net/forumdisplay.php?f=157",
         "author" => "Arrow768",
         "authorsite" => "http://sourcedonates.com",
-        "version" => "0.2",
+        "version" => "0.6",
         "guid" => "",
         "compatibility" => "16*"
     );
@@ -57,6 +54,18 @@ function storeconnecter_activate() {
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
+	
+	$storeconnecter_setting = array(
+        'sid' => 'NULL',
+        'name' => 'storeconnecter_enable_debug',
+        'title' => 'Enable Debugging',
+        'description' => 'Enable Debug Mode',
+        'optionscode' => 'yesno',
+        'value' => '0',
+        'disporder' => 2,
+        'gid' => intval($gid),
+    );
+    $db->insert_query('settings', $storeconnecter_setting);
     
     $storeconnecter_setting = array(
         'sid' => 'NULL',
@@ -65,7 +74,7 @@ function storeconnecter_activate() {
         'description' => 'Enter the name of the SteamID row here',
         'optionscode' => 'text',
         'value' => 'fid1',
-        'disporder' => 2,
+        'disporder' => 3,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -77,7 +86,7 @@ function storeconnecter_activate() {
         'description' => 'The number of credits a user gets for a post',
         'optionscode' => 'text',
         'value' => '1',
-        'disporder' => 3,
+        'disporder' => 4,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -89,7 +98,7 @@ function storeconnecter_activate() {
         'description' => 'The number of credits a user gets for a thread',
         'optionscode' => 'text',
         'value' => '1',
-        'disporder' => 4,
+        'disporder' => 5,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -101,7 +110,7 @@ function storeconnecter_activate() {
         'description' => 'The number of credits a user gets for a vote',
         'optionscode' => 'text',
         'value' => '1',
-        'disporder' => 5,
+        'disporder' => 6,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -113,7 +122,7 @@ function storeconnecter_activate() {
         'description' => 'The number of credits a user gets for a poll',
         'optionscode' => 'text',
         'value' => '1',
-        'disporder' => 6,
+        'disporder' => 7,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -125,7 +134,7 @@ function storeconnecter_activate() {
         'description' => 'The number of credits a user gets for registering in the forum',
         'optionscode' => 'text',
         'value' => '1',
-        'disporder' => 7,
+        'disporder' => 8,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -137,7 +146,7 @@ function storeconnecter_activate() {
         'description' => 'The Host of the Store Database',
         'optionscode' => 'text',
         'value' => 'localhost',
-        'disporder' => 8,
+        'disporder' => 9,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -149,7 +158,7 @@ function storeconnecter_activate() {
         'description' => 'User of the Store Database',
         'optionscode' => 'text',
         'value' => 'user',
-        'disporder' => 9,
+        'disporder' => 10,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -161,7 +170,7 @@ function storeconnecter_activate() {
         'description' => 'Password of the Store Database',
         'optionscode' => 'text',
         'value' => 'password',
-        'disporder' => 10,
+        'disporder' => 11,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -173,7 +182,7 @@ function storeconnecter_activate() {
         'description' => 'Name of the Store Database',
         'optionscode' => 'text',
         'value' => 'store',
-        'disporder' => 11,
+        'disporder' => 12,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -183,7 +192,7 @@ function storeconnecter_activate() {
 // Deactivate
 function storeconnecter_deactivate() {
     global $db;
-    $db->query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name IN ('storeconnecter_enable','storeconnecter_steamidrow','storeconnecter_postcredits','storeconnecter_threadcredits','storeconnecter_dbhost','storeconnecter_dbuser','storeconnecter_dbpass','storeconnecter_dbname','storeconnecter_votecredits','storeconnecter_pollcredits')");
+    $db->query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name IN ('storeconnecter_enable','storeconnecter_enable_debug','storeconnecter_steamidrow','storeconnecter_postcredits','storeconnecter_threadcredits','storeconnecter_dbhost','storeconnecter_dbuser','storeconnecter_dbpass','storeconnecter_dbname','storeconnecter_votecredits','storeconnecter_pollcredits')");
     $db->query("DELETE FROM " . TABLE_PREFIX . "settinggroups WHERE name='storeconnecter'");
     rebuild_settings();
 }
@@ -193,14 +202,19 @@ function storeconnecter_deactivate() {
 function storeconnecter_global_start() {
     global $mybb, $db;
 
-    if ($mybb->settings['storeconnecter_enable'] == 1) {
+    if ($mybb->settings['storeconnecter_enable_debug'] == 1) {
         
+		echo "<center><h1>storeconnector is enabled</h1><br />";
+		
+		echo "steam:".$mybb->user[$mybb->settings['storeconnecter_steamidrow']];
+		
         //get the authid
-        $auth = steamid_to_auth($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
+        $auth = generate_authid($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
         echo "auth:".$auth."  ";
         
         $credits = get_storecredits();
         echo "credits:". $credits . "   ";
+		echo "</center>";
     }
 }
 
@@ -210,7 +224,6 @@ function storeconnecter_newreply_end(){
     if ($mybb->settings['storeconnecter_enable'] == 1) {
         
         $credits = get_storecredits($mybb->user[$mybb->settings['storecredits_steamidrow']]);
-        $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
         //get the credits
         $new_credits = $credits + $mybb->settings['storeconnecter_postcredits'];
         
@@ -224,7 +237,6 @@ function storeconnecter_newthread_end(){
     if ($mybb->settings['storeconnecter_enable'] == 1) {
         
         $credits = get_storecredits($mybb->user[$mybb->settings['storecredits_steamidrow']]);
-        $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
         //get the credits
         $new_credits = $credits + $mybb->settings['storeconnecter_threadcredits'];
         
@@ -238,7 +250,6 @@ function storeconnecter_newpoll(){
     if ($mybb->settings['storeconnecter_enable'] == 1) {
         
         $credits = get_storecredits($mybb->user[$mybb->settings['storecredits_steamidrow']]);
-        $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
         //get the credits
         $new_credits = $credits + $mybb->settings['storeconnecter_pollcredits'];
         
@@ -252,7 +263,6 @@ function storeconnecter_vote_end(){
     if ($mybb->settings['storeconnecter_enable'] == 1) {
         
         $credits = get_storecredits($mybb->user[$mybb->settings['storecredits_steamidrow']]);
-        $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
         //get the credits
         $new_credits = $credits + $mybb->settings['storeconnecter_votecredits'];
         
@@ -266,7 +276,6 @@ function storeconnecter_new_registration(){
     if ($mybb->settings['storeconnecter_enable'] == 1) {
         
         $credits = get_storecredits($mybb->user[$mybb->settings['storecredits_steamidrow']]);
-        $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
         //get the credits
         $new_credits = $credits + $mybb->settings['storeconnecter_registercredits'];
         
@@ -274,14 +283,26 @@ function storeconnecter_new_registration(){
     }
 }
 
+function generate_authid($steamid){ //generate the authid from the steamid / steamid 64 and ignore comunity urls
+	if(strpos($steamid,"steam") !== false){ 
+		$auth = steamid_to_auth($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
+	}elseif(strpos($steamid,"http") !== false){
+		$auth = 0;
+	}else{
+		$auth = steamid_to_auth(friendid_to_steam($mybb->user[$mybb->settings['storeconnecter_steamidrow']]));
+	}
+	
+	return $auth;
+}
 
-function friendid_to_auth($friendid){
+
+function friendid_to_steam($friendid){
     if (substr($friendid,-1)%2==0) $server=0; else $server=1;
     $auth=bcsub($friendid,'76561197960265728');
     $auth=bcsub($auth,$server);
     $auth=bcdiv($auth,2);
     $steam = "STEAM_0:".$server.':'.$auth;
-    return steamid_to_auth($steam);
+    return $steam;
 }
 
 function steamid_to_auth($steamid){
@@ -325,13 +346,13 @@ function get_storecredits(){
         }
 
     }catch(PDOException $e){
-        echo "Report the following error to your administrator".$e;
+        echo "Report the following error to your administrator: </br>".$e;
     }
 }
 
 function update_storecredits($new_credits){
     global $mybb;
-    $auth = steamid_to_auth($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
+    $auth = generate_authid($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
     
     //connect to a external db
     $host = $mybb->settings['storeconnecter_dbhost'];
@@ -352,7 +373,7 @@ function update_storecredits($new_credits){
             ':auth'=>$auth,
         ));
     }catch(PDOException $e){
-        echo "Report the following error to your administrator".$e;
+        echo "Report the following error to your administrator: </br>".$e;
     }
 }
 ?>
