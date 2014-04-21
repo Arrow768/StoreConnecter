@@ -22,7 +22,7 @@ function storeconnecter_info() {
         "website" => "https://forums.alliedmods.net/forumdisplay.php?f=157",
         "author" => "Arrow768",
         "authorsite" => "http://sourcedonates.com",
-        "version" => "0.4",
+        "version" => "0.5",
         "guid" => "",
         "compatibility" => "16*"
     );
@@ -207,7 +207,7 @@ function storeconnecter_global_start() {
 		echo "<center><h1>storeconnector is enabled</h1><br />";
 		
         //get the authid
-        $auth = steamid_to_auth($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
+        $auth = generate_authid($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
         echo "auth:".$auth."  ";
         
         $credits = get_storecredits();
@@ -222,7 +222,6 @@ function storeconnecter_newreply_end(){
     if ($mybb->settings['storeconnecter_enable'] == 1) {
         
         $credits = get_storecredits($mybb->user[$mybb->settings['storecredits_steamidrow']]);
-        $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
         //get the credits
         $new_credits = $credits + $mybb->settings['storeconnecter_postcredits'];
         
@@ -236,7 +235,6 @@ function storeconnecter_newthread_end(){
     if ($mybb->settings['storeconnecter_enable'] == 1) {
         
         $credits = get_storecredits($mybb->user[$mybb->settings['storecredits_steamidrow']]);
-        $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
         //get the credits
         $new_credits = $credits + $mybb->settings['storeconnecter_threadcredits'];
         
@@ -250,7 +248,6 @@ function storeconnecter_newpoll(){
     if ($mybb->settings['storeconnecter_enable'] == 1) {
         
         $credits = get_storecredits($mybb->user[$mybb->settings['storecredits_steamidrow']]);
-        $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
         //get the credits
         $new_credits = $credits + $mybb->settings['storeconnecter_pollcredits'];
         
@@ -264,7 +261,6 @@ function storeconnecter_vote_end(){
     if ($mybb->settings['storeconnecter_enable'] == 1) {
         
         $credits = get_storecredits($mybb->user[$mybb->settings['storecredits_steamidrow']]);
-        $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
         //get the credits
         $new_credits = $credits + $mybb->settings['storeconnecter_votecredits'];
         
@@ -278,7 +274,6 @@ function storeconnecter_new_registration(){
     if ($mybb->settings['storeconnecter_enable'] == 1) {
         
         $credits = get_storecredits($mybb->user[$mybb->settings['storecredits_steamidrow']]);
-        $steamid = $mybb->user[$mybb->settings['storeconnecter_steamidrow']];
         //get the credits
         $new_credits = $credits + $mybb->settings['storeconnecter_registercredits'];
         
@@ -286,8 +281,20 @@ function storeconnecter_new_registration(){
     }
 }
 
+function generate_authid($steamid){ //generate the authid from the steamid / steamid 64 and ignore comunity urls
+	if(strpos($steamid,"steam") !== false){ 
+		$auth = steamid_to_auth($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
+	}elseif(strpos($steamid,"http") !== false){
+		$auth = 0
+	}else{
+		$auth = steamid_to_auth(friendid_to_steam($mybb->user[$mybb->settings['storeconnecter_steamidrow']]));
+	}
+	
+	return $auth;
+}
 
-function friendid_to_auth($friendid){
+
+function friendid_to_steam($friendid){
     if (substr($friendid,-1)%2==0) $server=0; else $server=1;
     $auth=bcsub($friendid,'76561197960265728');
     $auth=bcsub($auth,$server);
@@ -343,7 +350,7 @@ function get_storecredits(){
 
 function update_storecredits($new_credits){
     global $mybb;
-    $auth = steamid_to_auth($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
+    $auth = generate_authid($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
     
     //connect to a external db
     $host = $mybb->settings['storeconnecter_dbhost'];
