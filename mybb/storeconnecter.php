@@ -285,7 +285,7 @@ function generate_authid($steamid){ //generate the authid from the steamid / ste
 	if(strpos($steamid,"steam") !== false){ 
 		$auth = steamid_to_auth($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
 	}elseif(strpos($steamid,"http") !== false){
-		$auth = 0
+		$auth = 0;
 	}else{
 		$auth = steamid_to_auth(friendid_to_steam($mybb->user[$mybb->settings['storeconnecter_steamidrow']]));
 	}
