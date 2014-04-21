@@ -7,7 +7,7 @@ if (!defined("IN_MYBB")) {
 }
 
 // Hooks
-if($mybb->settings[''] == 1){
+if($mybb->settings['storeconnecter_enable_debug'] == 1){
     $plugins->add_hook('global_start', 'storeconnecter_global_start');
 }
 
@@ -25,7 +25,7 @@ function storeconnecter_info() {
         "website" => "https://forums.alliedmods.net/forumdisplay.php?f=157",
         "author" => "Arrow768",
         "authorsite" => "http://sourcedonates.com",
-        "version" => "0.2",
+        "version" => "0.3",
         "guid" => "",
         "compatibility" => "16*"
     );
@@ -53,6 +53,18 @@ function storeconnecter_activate() {
         'description' => 'If you set this option to yes, this plugin be active on your board.',
         'optionscode' => 'yesno',
         'value' => '1',
+        'disporder' => 1,
+        'gid' => intval($gid),
+    );
+    $db->insert_query('settings', $storeconnecter_setting);
+	
+	$storeconnecter_setting = array(
+        'sid' => 'NULL',
+        'name' => 'storeconnecter_enable_debug',
+        'title' => 'Enable Debugging',
+        'description' => 'Only set this to yes if you are asked to do so',
+        'optionscode' => 'yesno',
+        'value' => '0',
         'disporder' => 1,
         'gid' => intval($gid),
     );
@@ -183,7 +195,7 @@ function storeconnecter_activate() {
 // Deactivate
 function storeconnecter_deactivate() {
     global $db;
-    $db->query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name IN ('storeconnecter_enable','storeconnecter_steamidrow','storeconnecter_postcredits','storeconnecter_threadcredits','storeconnecter_dbhost','storeconnecter_dbuser','storeconnecter_dbpass','storeconnecter_dbname','storeconnecter_votecredits','storeconnecter_pollcredits')");
+    $db->query("DELETE FROM " . TABLE_PREFIX . "settings WHERE name IN ('storeconnecter_enable','storeconnecter_enable_debug','storeconnecter_steamidrow','storeconnecter_postcredits','storeconnecter_threadcredits','storeconnecter_dbhost','storeconnecter_dbuser','storeconnecter_dbpass','storeconnecter_dbname','storeconnecter_votecredits','storeconnecter_pollcredits')");
     $db->query("DELETE FROM " . TABLE_PREFIX . "settinggroups WHERE name='storeconnecter'");
     rebuild_settings();
 }
