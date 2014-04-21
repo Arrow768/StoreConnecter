@@ -62,7 +62,7 @@ function storeconnecter_activate() {
         'description' => 'Enable Debug Mode',
         'optionscode' => 'yesno',
         'value' => '0',
-        'disporder' => 1,
+        'disporder' => 2,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -74,7 +74,7 @@ function storeconnecter_activate() {
         'description' => 'Enter the name of the SteamID row here',
         'optionscode' => 'text',
         'value' => 'fid1',
-        'disporder' => 2,
+        'disporder' => 3,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -86,7 +86,7 @@ function storeconnecter_activate() {
         'description' => 'The number of credits a user gets for a post',
         'optionscode' => 'text',
         'value' => '1',
-        'disporder' => 3,
+        'disporder' => 4,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -98,7 +98,7 @@ function storeconnecter_activate() {
         'description' => 'The number of credits a user gets for a thread',
         'optionscode' => 'text',
         'value' => '1',
-        'disporder' => 4,
+        'disporder' => 5,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -110,7 +110,7 @@ function storeconnecter_activate() {
         'description' => 'The number of credits a user gets for a vote',
         'optionscode' => 'text',
         'value' => '1',
-        'disporder' => 5,
+        'disporder' => 6,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -122,7 +122,7 @@ function storeconnecter_activate() {
         'description' => 'The number of credits a user gets for a poll',
         'optionscode' => 'text',
         'value' => '1',
-        'disporder' => 6,
+        'disporder' => 7,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -134,7 +134,7 @@ function storeconnecter_activate() {
         'description' => 'The number of credits a user gets for registering in the forum',
         'optionscode' => 'text',
         'value' => '1',
-        'disporder' => 7,
+        'disporder' => 8,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -146,7 +146,7 @@ function storeconnecter_activate() {
         'description' => 'The Host of the Store Database',
         'optionscode' => 'text',
         'value' => 'localhost',
-        'disporder' => 8,
+        'disporder' => 9,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -158,7 +158,7 @@ function storeconnecter_activate() {
         'description' => 'User of the Store Database',
         'optionscode' => 'text',
         'value' => 'user',
-        'disporder' => 9,
+        'disporder' => 10,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -170,7 +170,7 @@ function storeconnecter_activate() {
         'description' => 'Password of the Store Database',
         'optionscode' => 'text',
         'value' => 'password',
-        'disporder' => 10,
+        'disporder' => 11,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -182,7 +182,7 @@ function storeconnecter_activate() {
         'description' => 'Name of the Store Database',
         'optionscode' => 'text',
         'value' => 'store',
-        'disporder' => 11,
+        'disporder' => 12,
         'gid' => intval($gid),
     );
     $db->insert_query('settings', $storeconnecter_setting);
@@ -205,6 +205,8 @@ function storeconnecter_global_start() {
     if ($mybb->settings['storeconnecter_enable_debug'] == 1) {
         
 		echo "<center><h1>storeconnector is enabled</h1><br />";
+		
+		echo "steam:".$mybb->user[$mybb->settings['storeconnecter_steamidrow']];
 		
         //get the authid
         $auth = generate_authid($mybb->user[$mybb->settings['storeconnecter_steamidrow']]);
@@ -300,7 +302,7 @@ function friendid_to_steam($friendid){
     $auth=bcsub($auth,$server);
     $auth=bcdiv($auth,2);
     $steam = "STEAM_0:".$server.':'.$auth;
-    return steamid_to_auth($steam);
+    return $steam;
 }
 
 function steamid_to_auth($steamid){
