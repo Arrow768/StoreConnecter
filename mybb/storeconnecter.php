@@ -284,8 +284,8 @@ function storeconnecter_new_registration(){
 }
 
 function generate_authid($steamid){ //generate the authid from the steamid / steamid 64 and ignore comunity urls
-	if(strpos($steamid,"steam") !== false){ 
-		$auth = steamid_to_auth(steamid);
+	if(strpos($steamid,"_") !== false){ 
+		$auth = steamid_to_auth($steamid);
 	}elseif(strpos($steamid,"http") !== false){
 		$auth = 0;
 	}else{
