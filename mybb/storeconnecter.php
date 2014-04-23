@@ -22,7 +22,7 @@ function storeconnecter_info() {
         "website" => "https://forums.alliedmods.net/forumdisplay.php?f=157",
         "author" => "Arrow768",
         "authorsite" => "http://sourcedonates.com",
-        "version" => "1.0",
+        "version" => "1.0.1",
         "guid" => "",
         "compatibility" => "16*"
     );
