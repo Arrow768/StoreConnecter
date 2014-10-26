@@ -31,3 +31,5 @@ It is licensed under the AGPL and available for free in this repository.
 
 The Pro Version can show the number of store credits and the number of store items on the user profile and in the post info bit.
 If you are interested, send a mail to arrow768 [AT] sourcedonates.com
+
+The Pro Features will be merged into the free edition at the end of each year.
